@@ -42,6 +42,7 @@ RUN apt-get update \
                     freeradius-mysql \
                     net-tools \
                     php \
+                    php-dev \
                     php-common \
                     php-gd \
                     php-curl \
