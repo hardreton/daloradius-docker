@@ -8,13 +8,13 @@ echo 'echo "Initialization error" 1>&2' >> /cbs/init.sh
 DEBIAN_FRONTEND=noninteractive
 
 # wait for MySQL-Server to be ready
-while ! mysqladmin ping -h"$MYSQL_HOST" --silent; do
+while ! mysqladmin ping -h"$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" --silent; do
     sleep 20
 done
 
 # check if the database if empty
 table_count=$(mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -se "SELECT COUNT(DISTINCT \`table_name\`) FROM \`information_schema\`.\`columns\` WHERE \`table_schema\` = '$MYSQL_DATABASE'")
-if [[ $table_count -gt 0 ]]
+if [ $table_count -gt 0 ]
 then
   echo "database is not empty, skip importing"
 else
