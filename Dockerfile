@@ -73,16 +73,24 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
  && pear install -a -f Mail \
  && pear install -a -f Mail_Mime
 
-ENV DALO_VERSION 1.3
 
-RUN wget https://github.com/lirantal/daloradius/archive/"$DALO_VERSION".zip \
- && unzip "$DALO_VERSION".zip \
- && rm "$DALO_VERSION".zip \
+RUN wget https://github.com/lirantal/daloradius/archive/refs/heads/master.zip \
+ && unzip master.zip \
+ && rm master.zip \
  && rm -rf /var/www/html/index.html \
- && mv daloradius-"$DALO_VERSION"/* daloradius-"$DALO_VERSION"/.gitignore daloradius-"$DALO_VERSION"/.htaccess daloradius-"$DALO_VERSION"/.htpasswd /var/www/html \
- && mv /var/www/html/library/daloradius.conf.php.sample /var/www/html/library/daloradius.conf.php \
- && chown -R www-data:www-data /var/www/html \
- && chmod 644 /var/www/html/library/daloradius.conf.php
+ && mv master/contrib/docker/operators.conf /etc/apache2/sites-available/operators.conf \
+ && mv master/contrib/docker/users.conf /etc/apache2/sites-available/users.conf \
+ && a2dissite 000-default.conf && \
+ && a2ensite users.conf operators.conf && \
+ && sed -i 's/Listen 80/Listen 80\nListen 8000/' /etc/apache2/ports.conf \
+ && mv master/* master/.gitignore master/.htaccess master/.htpasswd /var/www/daloradius \
+ && mv /var/www/daloradius/app/common/includes/daloradius.conf.php.sample /var/www/daloradius/app/common/includes/daloradius.conf.php \
+ && chown -R www-data:www-data /var/www/daloradius \
+ && rm -rf /var/www/html \
+ && chmod 644 /var/www/daloradius/app/common/includes/daloradius.conf.php \
+ && touch /tmp/daloradius.log && chown -R www-data:www-data /tmp/daloradius.log \
+ && mkdir -p /var/log/apache2/daloradius && chown -R www-data:www-data /var/log/apache2/daloradius \
+ && echo "Mutex posixsem" >> /etc/apache2/apache2.conf
 
 EXPOSE 1812 1813 80
 
