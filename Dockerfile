@@ -83,6 +83,7 @@ RUN wget https://github.com/lirantal/daloradius/archive/refs/heads/master.zip \
  && a2dissite 000-default.conf && \
  && a2ensite users.conf operators.conf && \
  && sed -i 's/Listen 80/Listen 80\nListen 8000/' /etc/apache2/ports.conf \
+ && mkdir -p /var/www/daloradius \
  && mv master/* master/.gitignore master/.htaccess master/.htpasswd /var/www/daloradius \
  && mv /var/www/daloradius/app/common/includes/daloradius.conf.php.sample /var/www/daloradius/app/common/includes/daloradius.conf.php \
  && chown -R www-data:www-data /var/www/daloradius \
