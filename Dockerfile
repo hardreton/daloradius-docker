@@ -78,13 +78,13 @@ RUN wget https://github.com/lirantal/daloradius/archive/refs/heads/master.zip \
  && unzip master.zip \
  && rm master.zip \
  && rm -rf /var/www/html/index.html \
- && mv master/contrib/docker/operators.conf /etc/apache2/sites-available/operators.conf \
- && mv master/contrib/docker/users.conf /etc/apache2/sites-available/users.conf \
+ && mv daloradius-master/contrib/docker/operators.conf /etc/apache2/sites-available/operators.conf \
+ && mv daloradius-master/contrib/docker/users.conf /etc/apache2/sites-available/users.conf \
  && a2dissite 000-default.conf && \
  && a2ensite users.conf operators.conf && \
  && sed -i 's/Listen 80/Listen 80\nListen 8000/' /etc/apache2/ports.conf \
  && mkdir -p /var/www/daloradius \
- && mv master/* master/.gitignore master/.htaccess master/.htpasswd /var/www/daloradius \
+ && mv daloradius-master/* daloradius-master/.gitignore daloradius-master/.htaccess master/.htpasswd /var/www/daloradius \
  && mv /var/www/daloradius/app/common/includes/daloradius.conf.php.sample /var/www/daloradius/app/common/includes/daloradius.conf.php \
  && chown -R www-data:www-data /var/www/daloradius \
  && rm -rf /var/www/html \
