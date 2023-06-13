@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+DALORADIUS_PATH=/var/www/daloradius
+DALORADIUS_CONF_PATH=/var/www/daloradius/app/common/includes/daloradius.conf.php
+
 # set init failed flag, used for next running
 echo '#!/bin/bash' > /cbs/init.sh
 echo 'echo "Initialization error" 1>&2' >> /cbs/init.sh
@@ -22,7 +25,7 @@ else
 
   # Seed Database
   mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < /etc/freeradius/3.0/mods-config/sql/main/mysql/schema.sql 
-  mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < /var/www/html/contrib/db/mysql-daloradius.sql 
+  mysql -h "$MYSQL_HOST" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < /var/www/daloradius/contrib/db/mysql-daloradius.sql 
 fi
 
 # set Database connection
@@ -32,20 +35,20 @@ sed -i '1,$s/radius_db.*/radius_db="'$MYSQL_DATABASE'"/g' /etc/freeradius/3.0/mo
 sed -i 's|^#\s*password = .*|password = "'$MYSQL_PASSWORD'"|' /etc/freeradius/3.0/mods-available/sql 
 sed -i 's|^#\s*login = .*|login = "'$MYSQL_USER'"|' /etc/freeradius/3.0/mods-available/sql
 
-sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = .*;/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" /var/www/html/library/daloradius.conf.php
-sed -i "s/\$configValues\['CONFIG_DB_PORT'\] = .*;/\$configValues\['CONFIG_DB_PORT'\] = '$MYSQL_PORT';/" /var/www/html/library/daloradius.conf.php
-sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = .*;/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" /var/www/html/library/daloradius.conf.php 
-sed -i "s/\$configValues\['CONFIG_DB_USER'\] = .*;/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" /var/www/html/library/daloradius.conf.php
-sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = .*;/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" /var/www/html/library/daloradius.conf.php
-sed -i "s/\$configValues\['FREERADIUS_VERSION'\] = .*;/\$configValues\['FREERADIUS_VERSION'\] = '3';/" /var/www/html/library/daloradius.conf.php
+sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = .*;/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" $DALORADIUS_CONF_PATH
+sed -i "s/\$configValues\['CONFIG_DB_PORT'\] = .*;/\$configValues\['CONFIG_DB_PORT'\] = '$MYSQL_PORT';/" $DALORADIUS_CONF_PATH
+sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = .*;/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" $DALORADIUS_CONF_PATH
+sed -i "s/\$configValues\['CONFIG_DB_USER'\] = .*;/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" $DALORADIUS_CONF_PATH
+sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = .*;/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" $DALORADIUS_CONF_PATH
+sed -i "s/\$configValues\['FREERADIUS_VERSION'\] = .*;/\$configValues\['FREERADIUS_VERSION'\] = '3';/" $DALORADIUS_CONF_PATH
 
 # set crontab config
-sed -i "s/\$configValues\['CONFIG_DB_ENGINE'\] = .*;/\$configValues\['CONFIG_DB_ENGINE'\] = 'mysqli';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
-sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = .*;/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
-sed -i "s/\$configValues\['CONFIG_DB_PORT'\] = .*;/\$configValues\['CONFIG_DB_PORT'\] = '$MYSQL_PORT';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
-sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = .*;/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
-sed -i "s/\$configValues\['CONFIG_DB_USER'\] = .*;/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
-sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = .*;/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
+# sed -i "s/\$configValues\['CONFIG_DB_ENGINE'\] = .*;/\$configValues\['CONFIG_DB_ENGINE'\] = 'mysqli';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
+# sed -i "s/\$configValues\['CONFIG_DB_HOST'\] = .*;/\$configValues\['CONFIG_DB_HOST'\] = '$MYSQL_HOST';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
+# sed -i "s/\$configValues\['CONFIG_DB_PORT'\] = .*;/\$configValues\['CONFIG_DB_PORT'\] = '$MYSQL_PORT';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
+# sed -i "s/\$configValues\['CONFIG_DB_PASS'\] = .*;/\$configValues\['CONFIG_DB_PASS'\] = '$MYSQL_PASSWORD';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
+# sed -i "s/\$configValues\['CONFIG_DB_USER'\] = .*;/\$configValues\['CONFIG_DB_USER'\] = '$MYSQL_USER';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
+# sed -i "s/\$configValues\['CONFIG_DB_NAME'\] = .*;/\$configValues\['CONFIG_DB_NAME'\] = '$MYSQL_DATABASE';/" /var/www/html/contrib/scripts/maintenance/cleanStaleSessions.php
 
 # replace init.sh
 rm -r /cbs/*
