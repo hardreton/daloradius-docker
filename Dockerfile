@@ -30,6 +30,7 @@ ENV TZ Europe/Berlin
 
 RUN apt-get update \
  && apt-get install --yes \
+                    ca-certificates \
                     apt-utils \
                     tzdata \
                     apache2 \
@@ -41,17 +42,20 @@ RUN apt-get update \
                     freeradius-common \
                     freeradius-mysql \
                     net-tools \
-                    php \
-                    php-dev \
+                    php \                    
                     php-common \
                     php-gd \
+                    php-cli \
                     php-curl \
                     php-mail \
+                    php-dev \
                     php-mail-mime \
+                    php-mbstring \
                     php-db \
                     php-mysql \
+                    php-zip \
                     mariadb-client \
-                    libmysqlclient-dev \
+                    default-libmysqlclient-dev \
                     supervisor \
                     unzip \
                     wget \
