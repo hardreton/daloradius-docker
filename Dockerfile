@@ -90,6 +90,8 @@ RUN wget https://github.com/lirantal/daloradius/archive/refs/heads/master.zip \
  && rm -rf /var/www/html \
  && chmod 644 /var/www/daloradius/app/common/includes/daloradius.conf.php \
  && touch /tmp/daloradius.log && chown -R www-data:www-data /tmp/daloradius.log \
+ && mkdir -p /var/www/daloradius/var/backup && chown -R www-data:www-data /var/www/daloradius/var/backup \
+ && mkdir -p /var/www/daloradius/var/log && chown -R www-data:www-data /var/www/daloradius/var/log \
  && mkdir -p /var/log/apache2/daloradius && chown -R www-data:www-data /var/log/apache2/daloradius \
  && echo "Mutex posixsem" >> /etc/apache2/apache2.conf
 
